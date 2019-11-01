@@ -7,7 +7,7 @@ function get_weather_stats(weatherData,cnt){
     This function gets the maximum temperature and average humidity for each day (calendar day) and appends it into a table.
 
     NOTE: JSON data does not represent data of exactly 5 different days. It contains data of a city 
-    over a period of 24hrs * 5. This means there can be 6 days, where the first and last day contain incomplete 
+    over a period of 24hrs * 5. This means there can be 6 calendar days, where the first and last day contain incomplete 
     information.  
         
     */
