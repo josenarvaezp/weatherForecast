@@ -1,55 +1,47 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
-
   <title>Jose Narvaez Paliza coding exercise</title>
   <meta name="description" content="Weather forecast">
   <meta name="author" content="Jose Narvaez Paliza">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link rel="stylesheet" href="style.css">
-  <script type="text/javascript" src = 'script.js'></script>
 </head>
-
 <body>
    <h1>Welcome to the weather forecast</h1>
-   <h2 id ="cityTag">City: </h2>
-   <table id = "weatherTable"></table>
-
-   
+   <h2 id="cityTag">City:</h2>
+   <h2 id='message'>Loading Data...</h2>
+   <table id="weatherTable">
+   </table>
    <script type="text/javascript">
-	   
-		$( document ).ready(function() {
-
-			//using a proxy to overcome CORS error
+		$(document).ready(function(){
+			// using a proxy to overcome CORS error
 			const proxy = "https://cors-anywhere.herokuapp.com/";
 			var url = "https://samples.openweathermap.org/data/2.5/forecast?id=524901&appid=b6907d289e10d714a6e88b30761fae22";
-			url = proxy.concat(url);
+			var apiURL = proxy.concat(url);
 
-			//getting data from JSON object and appending it into table
-			$.getJSON(url, function(JSONdata){
-
+			$.getJSON(apiURL, function(JSONdata) {
 				//if JSON object contains no information then catch ERROR and append appropiate message
 				try {
+					$('#message').remove();
 					var city =  JSONdata.city.name;
 					var weatherData = JSONdata.list; //actual weather data
 					var cnt = JSONdata.cnt; //number of rows of weather data
-
 					$('#weatherTable').append('<tr><th>Date (D/M/YYYY)</th><th>Maximum Temperature (Kelvin)</th><th>Average humidity (%)</th></tr>');
-
+					
 					//adding name of the city into the html
 					$('#cityTag').append("<strong>"+ city +" </strong>");
-
+					
 					//for each day, get max temp and average humidity and append it into table
 					get_weather_stats(weatherData,cnt);
-					
-				}
-				catch(err) {
-					$('#weatherTable').append('<tr><td colspan="3">JSON file contains no weather data</td></tr>')
+				}catch(err){
+					$('#weatherTable').append('<tr><td colspan="3">JSON file contains no weather data</td></tr>');
+					console.log(err);
 				}
 			});
 		});
    </script>
+   <script type="text/javascript" src = 'script.js'></script>
 </body>
 </html>
