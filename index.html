@@ -17,27 +17,35 @@
    <script type="text/javascript">
 		$(document).ready(function(){
 			// using a proxy to overcome CORS error
-			const proxy = "https://cors-anywhere.herokuapp.com/";
+			const proxy = 'https://weather-api-proxy.herokuapp.com/proxy.php';
 			var url = "https://samples.openweathermap.org/data/2.5/forecast?id=524901&appid=b6907d289e10d714a6e88b30761fae22";
-			var apiURL = proxy.concat(url);
 
-			$.getJSON(apiURL, function(JSONdata) {
-				//if JSON object contains no information then catch ERROR and append appropiate message
-				try {
-					$('#message').remove();
-					var city =  JSONdata.city.name;
-					var weatherData = JSONdata.list; //actual weather data
-					var cnt = JSONdata.cnt; //number of rows of weather data
-					$('#weatherTable').append('<tr><th>Date (D/M/YYYY)</th><th>Maximum Temperature (Kelvin)</th><th>Average humidity (%)</th></tr>');
-					
-					//adding name of the city into the html
-					$('#cityTag').append("<strong>"+ city +" </strong>");
-					
-					//for each day, get max temp and average humidity and append it into table
-					get_weather_stats(weatherData,cnt);
-				}catch(err){
-					$('#weatherTable').append('<tr><td colspan="3">JSON file contains no weather data</td></tr>');
-					console.log(err);
+			//using ajax POST method to send to the proxy the url we want to get JSON from
+			$.ajax({
+				type: 'POST',
+				url: proxy,
+				data: { apiURL: url},
+				success: function(data){
+					//convert string JSON data to JSON object
+					var JSONdata = JSON.parse(data);
+
+					//if JSON object contains no information then catch ERROR and append appropiate message
+					try {
+						$('#message').remove();
+						var city =  JSONdata.city.name;
+						var weatherData = JSONdata.list; //actual weather data
+						var cnt = JSONdata.cnt; //number of rows of weather data
+						$('#weatherTable').append('<tr><th>Date (D/M/YYYY)</th><th>Maximum Temperature (Kelvin)</th><th>Average humidity (%)</th></tr>');
+						
+						//adding name of the city into the html
+						$('#cityTag').append("<strong>"+ city +" </strong>");
+						
+						//for each day, get max temp and average humidity and append it into table
+						get_weather_stats(weatherData,cnt);
+					}catch(err){
+						$('#weatherTable').append('<tr><td colspan="3">JSON file contains no weather data</td></tr>');
+						console.log(err);
+					}
 				}
 			});
 		});
